@@ -1,2 +1,46 @@
-# MLOPS-Project2
-Proyecto 2 Machine Learning Ops
+![alt text](https://github.com/c4ttivo/MLOpsTaller1/blob/main/mlopstaller1/imgs/logo.png?raw=true)
+
+# MLOps - Proyecto 2
+## Autores
+*    Daniel Crovo (dcrovo@javeriana.edu.co)
+*    Hugo Poveda (h.poveda@javeriana.edu.co)
+*    Carlos Trujillo (ca.trujillo@javeriana.edu.co)
+
+## Profesor
+*    Cristian Diaz (diaz.cristian@javeriana.edu.co)
+
+## Instrucciones
+Clone el repositorio de git usando el siguiente comando en la consola de su sistema operativo:
+
+
+```
+# git clone https://github.com/c4ttivo/MLOPS-Project2.git
+```
+
+Una vez ejecutado el comando anterior aparece el folder MLOPS-Project2. Luego es necesario ubicarse en el directorio de trabajo en el que se encuentra el archivo docker-compose.yml.
+
+
+```
+# cd MLOPS-Project2/
+```
+
+Ahora es necesario construir los contenedores
+
+
+```
+# sudo docker-compose run
+```
+En este paso se descarga las imágenes de acuerdo con lo especificado en el archivo docker-compose.yml.
+
+<img src="https://github.com/c4ttivo/MLOPS-Project2/blob/main/imgs/console.png?raw=true" width="50%" height="50%" />
+
+Una vez finalizada la creación de los contenedores, se debe poder ingresar a las aplicaciones de cada contenedor a través de las siguientes URLs:
+
+<img src="https://github.com/c4ttivo/MLOPS-Project2/blob/main/imgs/minio.png?raw=true" width="50%" height="50%" />
+<img src="https://github.com/c4ttivo/MLOPS-Project2/blob/main/imgs/mlflow.png?raw=true" width="50%" height="50%" />
+<img src="https://github.com/c4ttivo/MLOPS-Project2/blob/main/imgs/airflow.png?raw=true" width="50%" height="50%" />
+
+
+
+![alt text](https://github.com/c4ttivo/MLOpsTaller1/blob/main/mlopstaller1/imgs/fastapi.png?raw=true)
+
