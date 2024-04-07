@@ -41,11 +41,11 @@ En este paso se descarga las imágenes de acuerdo con lo especificado en el arch
 Una vez finalizada la creación de los contenedores, se debe poder ingresar a las aplicaciones de cada contenedor a través de las siguientes URLs:
 
 http://10.43.101.155:8083/ </br>
-<img src="https://github.com/c4ttivo/MLOPS-Project2/blob/main/img/minio.png?raw=true" width="50%" height="50%" />
+<img src="https://github.com/c4ttivo/MLOPS-Project2/blob/main/img/minio.png?raw=true" width="50%" height="50%" /> </br>
 http://10.43.101.155:8082/ </br>
-<img src="https://github.com/c4ttivo/MLOPS-Project2/blob/main/img/mlflow.png?raw=true" width="50%" height="50%" />
+<img src="https://github.com/c4ttivo/MLOPS-Project2/blob/main/img/mlflow.png?raw=true" width="50%" height="50%" /> </br>
 http://10.43.101.155:8080/ </br>
-<img src="https://github.com/c4ttivo/MLOPS-Project2/blob/main/img/airflow.png?raw=true" width="50%" height="50%" />
+<img src="https://github.com/c4ttivo/MLOPS-Project2/blob/main/img/airflow.png?raw=true" width="50%" height="50%" /> </br>
 
 
 
