@@ -9,6 +9,10 @@
 ## Profesor
 *    Cristian Diaz (diaz.cristian@javeriana.edu.co)
 
+## Arquitectura
+
+![alt text](https://github.com/c4ttivo/MLOPS-Project2/blob/main/img/architecture.png?raw=true)
+
 ## Instrucciones
 Clone el repositorio de git usando el siguiente comando en la consola de su sistema operativo:
 
@@ -32,12 +36,15 @@ Ahora es necesario construir los contenedores
 ```
 En este paso se descarga las imágenes de acuerdo con lo especificado en el archivo docker-compose.yml.
 
-<img src="https://github.com/c4ttivo/MLOPS-Project2/blob/main/imgs/console.png?raw=true" width="50%" height="50%" />
+<img src="https://github.com/c4ttivo/MLOPS-Project2/blob/main/img/console.png?raw=true" width="50%" height="50%" />
 
 Una vez finalizada la creación de los contenedores, se debe poder ingresar a las aplicaciones de cada contenedor a través de las siguientes URLs:
 
+http://10.43.101.155:8083/
 <img src="https://github.com/c4ttivo/MLOPS-Project2/blob/main/img/minio.png?raw=true" width="50%" height="50%" />
+http://10.43.101.155:8082/
 <img src="https://github.com/c4ttivo/MLOPS-Project2/blob/main/img/mlflow.png?raw=true" width="50%" height="50%" />
+http://10.43.101.155:8080/
 <img src="https://github.com/c4ttivo/MLOPS-Project2/blob/main/img/airflow.png?raw=true" width="50%" height="50%" />
 
 
