@@ -84,9 +84,9 @@ services:
       MYSQL_USER: modeldbuser
       MYSQL_PASSWORD: modeldbpass
     ports:
-      - "3307:3306"
+      - "3307:3307"
     volumes:
-      - mysql-data:/var/lib/mysql
+      - modeldb-data:/var/lib/mysql
 
   redis:
     image: redis:latest
@@ -324,3 +324,4 @@ volumes:
   minio-data:
   postgres-db-volume:
   mysql-data:
+  modeldb-data:
