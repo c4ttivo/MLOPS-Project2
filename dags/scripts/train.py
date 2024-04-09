@@ -7,12 +7,11 @@ from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.model_selection import GridSearchCV, train_test_split
 import mlflow
-from mlflow.sklearn import save_model
 
 
 # MLFlow configs
 
-os.environ['MLFLOW_S3_ENDPOINT_URL'] = "http://minio:8081"
+os.environ['MLFLOW_S3_ENDPOINT_URL'] = "http://minio:9000"
 os.environ['AWS_ACCESS_KEY_ID'] = 'minioadmin'
 os.environ['AWS_SECRET_ACCESS_KEY'] = 'minioadmin'
 mlflow.set_tracking_uri("http://mlflow_server:5000")
@@ -27,11 +26,31 @@ RANDOM_STATE = 42
 def get_training_data():
     engine = create_engine(DATABASE_URI)
     train_df = pd.read_sql('training_data', engine)
+    # Ajusta los tipos de datos antes de guardar en SQL
+    train_df["Wilderness_Area"] = train_df["Wilderness_Area"].astype(str)
+    train_df["Soil_Type"] = train_df["Soil_Type"].astype(str)
+
+    # Para las otras columnas, convierte a enteros si es apropiado
+    columns_to_exclude = ["Wilderness_Area", "Soil_Type"]
+
+    for columns in train_df.columns:
+        if columns not in columns_to_exclude:
+            train_df[columns] = pd.to_numeric(train_df[columns])
     return train_df
 
 def get_test_data():
     engine = create_engine(DATABASE_URI)
     test_df = pd.read_sql('test_data', engine)
+    # Ajusta los tipos de datos antes de guardar en SQL
+    test_df["Wilderness_Area"] = test_df["Wilderness_Area"].astype(str)
+    test_df["Soil_Type"] = test_df["Soil_Type"].astype(str)
+
+    # Para las otras columnas, convierte a enteros si es apropiado
+    columns_to_exclude = ["Wilderness_Area", "Soil_Type"]
+
+    for columns in test_df.columns:
+        if columns not in columns_to_exclude:
+            test_df[columns] = pd.to_numeric(test_df[columns])  
     return test_df
 
 
@@ -59,34 +78,28 @@ def train_random_forest():
         "random_forest__n_estimators":[100,150,200]
     }
 
+    model_name = "random_forest"
+    search_rf = GridSearchCV(pipeline, param_grid, n_jobs=2)
 
-    mlflow.autolog(log_model_signatures=True, log_input_examples=True)
+    mlflow.sklearn.autolog(log_model_signatures=True, log_input_examples=True,registered_model_name=model_name)
     with mlflow.start_run(run_name="random_forest_run") as run:
-        model_name = "random_forest"
-        search_rf = GridSearchCV(pipeline, param_grid, n_jobs=2)
 
         search_rf.fit(X_train, y_train)
-                # Log best parameters and best score
-        mlflow.log_params(search_rf.best_params_)
-        mlflow.log_metric("best_score", search_rf.best_score_)
-
-        # Log the model
-        mlflow.sklearn.log_model(search_rf.best_estimator_, model_name)
-
-        # Register the model
-        model_uri = f"runs:/{run.info.run_id}/{model_name}"
-        mlflow.register_model(model_uri, model_name)
-        mlflow.end_run()
 
 
 def train_gbm():
 
     df = get_training_data()
-
+    
     y_train = df['Cover_Type']
     X_train = df.drop(columns=['Cover_Type'])
 
+    model_name = "gbm"
+
     non_numerical_features = ["Wilderness_Area", "Soil_Type"]
+
+    mlflow.sklearn.autolog(log_model_signatures=True, log_input_examples=True, registered_model_name=model_name)
+
     column_transform = make_column_transformer(
         (OneHotEncoder(handle_unknown='ignore'), non_numerical_features),
         remainder='passthrough'
@@ -98,27 +111,10 @@ def train_gbm():
         ("gbm", GradientBoostingClassifier())
     ])
 
-    param_grid = {
-        "gbm__learning_rate": [0.01, 0.1, 0.5],
-        "gbm__n_estimators": [100, 200, 300]
-    }
 
+    #search_gb = GridSearchCV(pipeline, param_grid, n_jobs=2)
 
-
-    mlflow.autolog(log_model_signatures=True, log_input_examples=True)
     with mlflow.start_run(run_name="gbm_run") as run:
-        model_name = "gbm"
-        search_gb = GridSearchCV(pipeline, param_grid, n_jobs=2)
 
-        search_gb.fit(X_train, y_train)
-                # Log best parameters and best score
-        mlflow.log_params(search_gb.best_params_)
-        mlflow.log_metric("best_score", search_gb.best_score_)
 
-        # Log the model
-        mlflow.sklearn.log_model(search_gb.best_estimator_, model_name)
-
-        # Register the model
-        model_uri = f"runs:/{run.info.run_id}/{model_name}"
-        mlflow.register_model(model_uri, model_name)
-        mlflow.end_run()
+        pipeline.fit(X_train, y_train)

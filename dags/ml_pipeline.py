@@ -1,6 +1,7 @@
 from airflow import DAG
 from airflow.models import Variable
-from airflow.operators.python_operator import ShortCircuitOperator, PythonOperator
+from airflow.operators.python_operator import PythonOperator, ShortCircuitOperator,BranchOperator
+from airflow.operators.dummy_operator import DummyOperator
 from datetime import datetime, timedelta
 import requests
 import os
@@ -11,9 +12,7 @@ from scripts.train import train_random_forest, train_gbm
 GROUP_NUMBER = 6
 API_URL = f"http://10.43.101.149:80/data?group_number={GROUP_NUMBER}"
 DATABASE_URI = 'mysql+pymysql://modeldbuser:modeldbpass@modeldb:3306/modeldb'
-os.environ['MLFLOW_S3_ENDPOINT_URL'] = "http://minio:8081"
-os.environ['AWS_ACCESS_KEY_ID'] = 'minioadmin'
-os.environ['AWS_SECRET_ACCESS_KEY'] = 'minioadmin'
+
     
 def fetch_and_store_data(**kwargs):
     '''
@@ -22,12 +21,11 @@ def fetch_and_store_data(**kwargs):
     
     # De acuerdo con la documentación de Arflow, top-level code e imports pesados
     # deben ser importados en la función llamable
+    max_calls = 10 
     import pandas as pd
     from sqlalchemy import create_engine
 
     success_calls = int(Variable.get("success_calls", default_var=0))
-
-
 
     response = requests.get(API_URL)
 
@@ -53,18 +51,25 @@ def fetch_and_store_data(**kwargs):
         ]
         # Crea un DataFrame con los datos
         df = pd.DataFrame(data, columns=columns)
-        
+
+                
         # Almacena los datos en la base de datos
         engine = create_engine(DATABASE_URI)
         df.to_sql('dataset_covertype_table', con=engine, if_exists='append', index=False)
         
-        return  success_calls >=2
+        return success_calls >= max_calls
 
     else:
         if response.status_code == 400: 
             return True
-        raise Exception(f"Error al obtener datos de la API: Estado {response.status_code}")
+        else:
+            raise Exception(f"Error al obtener datos de la API: Estado {response.status_code}")
     
+
+def end_of_dag():
+    pass 
+
+
 def process_data(**kwargs):
     import pandas as pd
     from sklearn.model_selection import train_test_split
@@ -106,6 +111,7 @@ fetch_and_store_data_task = ShortCircuitOperator(
     dag=dag,
 )
 
+
 process_data_task = PythonOperator(
     task_id = 'process_data',
     python_callable = process_data,
@@ -125,4 +131,12 @@ train_gbm_task = PythonOperator(
     dag = dag,
 )
 
-fetch_and_store_data_task >> process_data_task >> [train_gbm_task, train_random_forest_task]
+
+end = DummyOperator(
+    task_id='end',
+    trigger_rule='none_failed_or_skipped',
+    dag=dag,
+)
+
+# Task dependencies
+fetch_and_store_data_task >> process_data_task >> [train_random_forest_task, train_gbm_task] >> end
