@@ -73,5 +73,5 @@ A través de la interfaz de FastAPI, es posible hacer predicciones usando el mod
 
 http://10.43.101.155/docs </br>
 
-![alt text](https://github.com/c4ttivo/MLOPS-Project2/blob/main/img/inference.png?raw=true)
+![alt text](https://github.com/c4ttivo/MLOPS-Project2/blob/dev/img/inference.png?raw=true)
 
