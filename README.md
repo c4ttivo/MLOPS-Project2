@@ -3,7 +3,6 @@
 # MLOps - Proyecto 2
 ## Autores
 *    Daniel Crovo (dcrovo@javeriana.edu.co)
-*    Hugo Poveda (h.poveda@javeriana.edu.co)
 *    Carlos Trujillo (ca.trujillo@javeriana.edu.co)
 
 ## Profesor
@@ -68,6 +67,11 @@ Los siguientes pasos permiten realizar la configuración del ambiente luego de s
 ```	
 2.	A continuación se debe configurar el bucket de S3, con el nombre **mlflows3** requerido por **MLflow**.
 
+## Predicción
 
-![alt text](https://github.com/c4ttivo/MLOpsTaller1/blob/main/mlopstaller1/imgs/fastapi.png?raw=true)
+A través de la interfaz de FastAPI, es posible hacer predicciones usando el modelo almacenado y etiquetado @produccion.
+
+http://10.43.101.155/docs </br>
+
+![alt text](https://github.com/c4ttivo/MLOPS-Project2/blob/main/img/inference.png?raw=true)
 
